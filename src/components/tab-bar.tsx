@@ -24,6 +24,13 @@ const SPRING = { damping: 22, stiffness: 240, mass: 0.7 }
  * iOS gets a real blur behind it; Android uses a see-through fill
  * (a live blur there needs the whole screen wrapped, which costs too much).
  */
+// Mostly solid so content behind the bar barely shows. iOS is a little lower
+// because the blur underneath already softens what is behind it.
+const FILL_OPACITY = {
+  ios: { dark: 0.92, light: 0.93 },
+  android: { dark: 0.94, light: 0.95 }
+} as const
+
 export function TabBar({ state, emitter, navigateToTab, insets }: BottomTabBarProps) {
   const t = useTheme()
   const dark = t.scheme === 'dark'
@@ -70,7 +77,7 @@ export function TabBar({ state, emitter, navigateToTab, insets }: BottomTabBarPr
             style={[
               StyleSheet.absoluteFill,
               {
-                backgroundColor: alpha(dark ? '#1c1c1b' : '#ffffff', Platform.OS === 'ios' ? (dark ? 0.55 : 0.6) : dark ? 0.86 : 0.88),
+                backgroundColor: alpha(t.card, FILL_OPACITY[Platform.OS === 'ios' ? 'ios' : 'android'][dark ? 'dark' : 'light']),
                 borderRadius: 999,
                 borderWidth: StyleSheet.hairlineWidth * 2,
                 borderColor: dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)'
