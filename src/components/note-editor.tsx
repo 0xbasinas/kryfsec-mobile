@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from 'react'
-import { Keyboard, PixelRatio, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native'
+import { Keyboard, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native'
 import { EnrichedMarkdownTextInput, type EnrichedMarkdownTextInputInstance, type MarkdownTextInputStyle, type StyleState } from 'react-native-enriched-markdown'
 import {
   IconBlockquote,
@@ -40,11 +40,11 @@ type Focusable = { focus: () => void }
 
 export type NoteEditor = ReturnType<typeof useNoteEditor>
 
-// On Android the library reads lineHeight as raw pixels and subtracts the text
-// size (in pixels). Passing dp makes the spacing negative and lines overlap,
-// so convert to pixels and ask for about 5dp of extra space per line.
-const INPUT_LINE_HEIGHT =
-  Platform.OS === 'android' ? (15 * PixelRatio.getFontScale() + 5) * PixelRatio.get() : 23
+// On Android the library reads lineHeight as raw pixels, and its height
+// measurement ignores line spacing, so a lineHeight there makes lines overlap
+// or the last line get cut off. Use the natural line height on Android and
+// add spacing between list items instead.
+const INPUT_LINE_HEIGHT = Platform.OS === 'android' ? undefined : 23
 
 export function useNoteEditor(initial: string, onChange: (md: string) => void) {
   const [blocks, setBlocks] = useState<Block[]>(() => parseBlocks(initial))
@@ -178,7 +178,29 @@ export function useNoteEditor(initial: string, onChange: (md: string) => void) {
   }
 
   /** Typing ``` or [] or > on a line of its own turns it into that block. */
+  // Android measures the input's starting height from plain text, before
+  // headings and list spacing are applied, so the last line can be cut off
+  // until the first edit. Setting the same value once after mount makes it
+  // measure again. The change event that this causes is ignored.
+  const settling = useRef(new Set<string>())
+  const settled = useRef(new Set<string>())
+  const remeasure = useCallback((key: string, md: string) => {
+    if (Platform.OS !== 'android' || !md || settled.current.has(key)) return
+    settled.current.add(key)
+    setTimeout(() => {
+      const el = inputs.current.get(key) as unknown as EnrichedMarkdownTextInputInstance | undefined
+      if (!el) return
+      settling.current.add(key)
+      el.setValue(escapeForInput(md))
+      setTimeout(() => settling.current.delete(key), 400)
+    }, 60)
+  }, [])
+
   const onTextMarkdown = (key: string, md: string) => {
+    if (settling.current.has(key)) {
+      settling.current.delete(key)
+      return
+    }
     const m = /(^|\n)(```(\w*)|\[ ?\]|>)[ \t]*$/.exec(md)
     if (m) {
       const rest = md.slice(0, m.index).replace(/\s+$/, '')
@@ -208,6 +230,7 @@ export function useNoteEditor(initial: string, onChange: (md: string) => void) {
     addItem,
     removeItem,
     onTextMarkdown,
+    remeasure,
     actions
   }
 }
@@ -227,7 +250,7 @@ export function NoteEditorView({ editor, placeholder }: { editor: NoteEditor; pl
       h4: { fontSize: 15, fontWeight: '700', color: t.fg },
       h5: { fontSize: 14, fontWeight: '700', color: t.muted },
       h6: { fontSize: 13, fontWeight: '700', color: t.muted },
-      list: { itemSpacing: 2 }
+      list: { itemSpacing: 4 }
     }),
     [t]
   )
@@ -238,8 +261,10 @@ export function NoteEditorView({ editor, placeholder }: { editor: NoteEditor; pl
     <View style={{ gap: 10 }}>
       {blocks.map((b) => {
         const setRef = (el: Focusable | null) => {
-          if (el) editor.inputs.current.set(b.key, el)
-          else editor.inputs.current.delete(b.key)
+          if (el) {
+            editor.inputs.current.set(b.key, el)
+            if (b.type === 'text') editor.remeasure(b.key, b.md)
+          } else editor.inputs.current.delete(b.key)
         }
         switch (b.type) {
           case 'text':
