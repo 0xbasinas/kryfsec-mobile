@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar'
 import * as SystemUI from 'expo-system-ui'
 import { useEffect } from 'react'
 import { useStore } from '@/lib/store'
+import { KeyboardProvider } from 'react-native-keyboard-controller'
 import { ThemeProvider, useTheme } from '@/theme'
 
 SplashScreen.preventAutoHideAsync().catch(() => {})
@@ -39,8 +40,10 @@ function Root() {
 
 export default function RootLayout() {
   return (
-    <ThemeProvider>
-      <Root />
-    </ThemeProvider>
+    <KeyboardProvider>
+      <ThemeProvider>
+        <Root />
+      </ThemeProvider>
+    </KeyboardProvider>
   )
 }

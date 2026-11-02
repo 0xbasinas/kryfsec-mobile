@@ -1,8 +1,8 @@
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
 import { Alert, View } from 'react-native'
-import { Markdown } from '@/components/markdown'
+import { NoteView } from '@/components/note-view'
 import { Badge, Card, Empty, IconButton, Screen, StackBar, Txt } from '@/components/ui'
-import { IconCalendar, IconClock, IconMap2, IconTrash } from '@/lib/icons'
+import { IconCalendar, IconClock, IconMap2, IconPencil, IconTrash } from '@/lib/icons'
 import { useStore } from '@/lib/store'
 import { fmtDate, fmtHours } from '@/lib/utils'
 import { useTheme } from '@/theme'
@@ -14,6 +14,7 @@ export default function JournalEntry() {
   const entry = useStore((s) => s.logs.find((l) => l.id === id))
   const topic = useStore((s) => (entry?.topicId ? s.topics.find((x) => x.id === entry.topicId) : undefined))
   const remove = useStore((s) => s.remove)
+  const upsert = useStore((s) => s.upsert)
 
   const onDelete = () =>
     Alert.alert('Delete entry?', 'This cannot be undone.', [
@@ -31,7 +32,17 @@ export default function JournalEntry() {
   return (
     <View style={{ flex: 1, backgroundColor: t.bg }}>
       <Stack.Screen options={{ title: entry?.title ?? 'Entry' }} />
-      <StackBar title="Entry" right={entry ? <IconButton icon={IconTrash} label="Delete entry" onPress={onDelete} /> : null} />
+      <StackBar
+        title="Entry"
+        right={
+          entry ? (
+            <View style={{ flexDirection: 'row', gap: 8 }}>
+              <IconButton icon={IconPencil} label="Edit entry" onPress={() => router.push({ pathname: '/journal/new', params: { id: entry.id } })} />
+              <IconButton icon={IconTrash} label="Delete entry" onPress={onDelete} />
+            </View>
+          ) : null
+        }
+      />
       {!entry ? (
         <Empty text="This entry was not found." />
       ) : (
@@ -53,7 +64,9 @@ export default function JournalEntry() {
               </View>
             )}
           </View>
-          <Card style={{ paddingVertical: 18 }}>{entry.body.trim() ? <Markdown source={entry.body} /> : <Txt muted>No notes yet.</Txt>}</Card>
+          <Card style={{ paddingVertical: 16 }}>
+            {entry.body.trim() ? <NoteView source={entry.body} onChange={(body) => upsert('logs', { ...entry, body })} /> : <Txt muted>No notes yet.</Txt>}
+          </Card>
         </Screen>
       )}
     </View>
