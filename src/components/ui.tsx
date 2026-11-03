@@ -1,7 +1,8 @@
 import { useRouter } from 'expo-router'
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import {
   Pressable,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -15,6 +16,7 @@ import {
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { IconChevronLeft, IconChevronRight, type Icon } from '@/lib/icons'
+import { refreshSync, useSync } from '@/lib/sync'
 import { radius, useTheme } from '@/theme'
 
 /* ---------- Text ---------- */
@@ -28,18 +30,36 @@ export function Txt({ variant = 'body', color, muted, style, ...rest }: TextProp
 
 /* ---------- Layout ---------- */
 
-/** A scrolling page. `tab` pages leave room for the floating tab bar. */
+/** A scrolling page. `tab` pages leave room for the floating tab bar. `refresh`: pull down to sync. */
 export function Screen({
   children,
   tab,
+  refresh,
   contentStyle,
   ...rest
-}: ScrollViewProps & { children: ReactNode; tab?: boolean; contentStyle?: StyleProp<ViewStyle> }) {
+}: ScrollViewProps & { children: ReactNode; tab?: boolean; refresh?: boolean; contentStyle?: StyleProp<ViewStyle> }) {
   const t = useTheme()
   const insets = useSafeAreaInsets()
+  const paired = useSync((s) => s.paired)
+  const [pulling, setPulling] = useState(false)
+  const refreshControl =
+    refresh && paired ? (
+      <RefreshControl
+        refreshing={pulling}
+        tintColor={t.muted}
+        colors={[t.accent]}
+        progressBackgroundColor={t.card}
+        progressViewOffset={tab ? insets.top : 0}
+        onRefresh={() => {
+          setPulling(true)
+          refreshSync().finally(() => setPulling(false))
+        }}
+      />
+    ) : undefined
   return (
     <View style={{ flex: 1, backgroundColor: t.bg }}>
       <ScrollView
+        refreshControl={refreshControl}
         {...rest}
         style={{ flex: 1, backgroundColor: t.bg }}
         showsVerticalScrollIndicator={false}

@@ -69,7 +69,7 @@ export default function Journal() {
   const total = logs.reduce((a, l) => a + l.minutes, 0)
 
   return (
-    <Screen tab keyboardShouldPersistTaps="handled">
+    <Screen tab refresh keyboardShouldPersistTaps="handled">
       <PageTitle
         title="Journal"
         subtitle={`${logs.length} entries · ${fmtHours(total)} logged`}

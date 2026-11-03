@@ -3,7 +3,7 @@
 kryfsec phone app, the companion to the [kryfsec desktop app](https://github.com/0xbasinas/kryfsec-desktop). Built with Expo (SDK 58), Expo Router and TypeScript.
 Website: [kryfsec.com](https://kryfsec.com)
 
-Your data is saved on the phone (AsyncStorage). Sync with the desktop app is not built yet.
+Your data is saved on the phone (AsyncStorage). It can sync with the desktop app, end-to-end encrypted (see [Sync](#sync)).
 
 Run the commands below from the repo root.
 
@@ -43,6 +43,30 @@ Or in the cloud with EAS: `npm i -g eas-cli && eas build -p android --profile pr
 
 The `android/` and `ios/` folders are made by `npx expo prebuild` and are not committed.
 
+## Sync
+
+Settings → **Sync** on the phone. Pair with the desktop app:
+
+1. Desktop: Settings → Sync → *Turn on sync*. It shows a QR code.
+2. Phone: *Scan the desktop QR code* (or *Paste a key*) and confirm.
+   The example data on the phone is removed; your own entries stay.
+
+The phone can also start a sync (*New sync here*) and share the key to type into the desktop app (*I have a key*).
+
+- Data is encrypted on the phone (AES-256-GCM) before it is sent. The server at `sync.kryfsec.com` only stores locked data.
+- The key is kept in the Android Keystore / iOS Keychain (`expo-secure-store`).
+- **If you lose the key, the synced copy cannot be recovered.** Data on each device stays.
+- Syncs when the app opens or comes back to the front, a few seconds after a change, every 5 minutes while open,
+  on *Sync now* and when you pull down on a list. Works offline: changes are sent later.
+- The camera is only used to scan the QR code. The picture is not saved or sent.
+
+How changes from two devices are merged: [docs/merging.md](https://github.com/0xbasinas/kryfsec-sync/blob/main/docs/merging.md).
+Server and shared sync code: [kryfsec-sync](https://github.com/0xbasinas/kryfsec-sync). The shared code is copied into `src/sync-core/` (do not edit it there).
+
+<img src="screenshots/11-sync-dark.png" width="260" alt="Sync settings, dark"> <img src="screenshots/12-sync-light.png" width="260" alt="Sync settings, light">
+
+The sync shots are from the web preview. On the web preview the confirm dialogs do not show, so joining and turning off only work in the phone app.
+
 ## Scripts
 
 - `npm run typecheck` – TypeScript check
@@ -54,9 +78,10 @@ The `android/` and `ios/` folders are made by `npx expo prebuild` and are not co
 
 - `src/app` – screens (Expo Router). Tabs: Home, Journal, Roadmap, Labs, More.
 - `src/components` – UI pieces, charts, tab bar, note editor (`note-editor.tsx`) and note viewer (`note-view.tsx`).
-- `src/lib` – types, sample data and stats (shared with the desktop app), store, note blocks (`note-blocks.ts`).
+- `src/lib` – types, sample data and stats (shared with the desktop app), store, note blocks (`note-blocks.ts`), sync (`sync.ts`).
+- `src/sync-core` – shared sync code copied from kryfsec-sync.
 - `src/theme` – colors for dark and light, same as the desktop app.
-- `screenshots/` – shots from the Android emulator.
+- `screenshots/` – shots from the Android emulator (sync shots from the web preview).
 
 ## Notes editor
 

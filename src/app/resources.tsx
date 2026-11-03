@@ -17,7 +17,7 @@ export default function Resources() {
   return (
     <View style={{ flex: 1, backgroundColor: t.bg }}>
       <StackBar title="Resources" />
-      <Screen>
+      <Screen refresh>
         <Chips value={kind} onChange={setKind} options={[{ value: 'all', label: 'All' }, ...kinds.map((k) => ({ value: k, label: KIND_META[k].label }))]} />
         <Card padded={false}>
           {list.map((r, i) => {

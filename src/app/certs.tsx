@@ -14,7 +14,7 @@ export default function Certs() {
   return (
     <View style={{ flex: 1, backgroundColor: t.bg }}>
       <StackBar title="Certifications" />
-      <Screen>
+      <Screen refresh>
         {certs.length === 0 && <Empty text="No certifications yet." />}
         {certs.map((c) => (
           <Card key={c.id} style={{ gap: 12 }}>

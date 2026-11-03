@@ -65,7 +65,7 @@ export default function Dashboard() {
   const toneColor = { danger: t.danger, warn: t.warn, muted: t.muted }
 
   return (
-    <Screen tab>
+    <Screen tab refresh>
       {/* Greeting */}
       <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 12, marginBottom: 2 }}>
         <View style={{ flex: 1, gap: 4 }}>

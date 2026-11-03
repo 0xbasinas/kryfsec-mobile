@@ -28,7 +28,7 @@ export default function Labs() {
   const count = (s: WorkStatus) => labs.filter((l) => l.status === s).length
 
   return (
-    <Screen tab>
+    <Screen tab refresh>
       <PageTitle title="Labs & CTFs" subtitle={`${solved} solved · ${count('doing')} in progress`} />
       <Chips
         value={filter}

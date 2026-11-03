@@ -41,7 +41,7 @@ export default function More() {
   ]
 
   return (
-    <Screen tab>
+    <Screen tab refresh>
       <PageTitle title="More" />
       <View style={{ flexDirection: 'row', gap: 12 }}>
         <Mini label="Total time" value={fmtHours(totalMinutes({ logs }))} />

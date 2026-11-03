@@ -65,7 +65,7 @@ export default function Goals() {
   return (
     <View style={{ flex: 1, backgroundColor: t.bg }}>
       <StackBar title="Goals" />
-      <Screen>
+      <Screen refresh>
         <Txt variant="small" muted style={{ paddingHorizontal: 4 }}>
           Open · {open.length}
         </Txt>

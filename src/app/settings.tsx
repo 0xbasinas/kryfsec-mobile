@@ -1,7 +1,9 @@
 import { Alert, Pressable, StyleSheet, TextInput, View } from 'react-native'
+import { SyncSection } from '@/components/sync-section'
 import { Button, Card, Screen, Segmented, StackBar, Txt } from '@/components/ui'
 import { IconDeviceMobile, IconMoon, IconRefresh, IconSun, IconTrash } from '@/lib/icons'
 import { useStore } from '@/lib/store'
+import { useSync } from '@/lib/sync'
 import type { Settings } from '@/lib/types'
 import { makeTheme, useTheme } from '@/theme'
 
@@ -11,6 +13,7 @@ export default function SettingsScreen() {
   const setSettings = useStore((s) => s.setSettings)
   const resetSample = useStore((s) => s.resetSample)
   const resetEmpty = useStore((s) => s.resetEmpty)
+  const paired = useSync((s) => s.paired)
   const accents: Settings['accent'][] = ['periwinkle', 'sage', 'rose']
 
   return (
@@ -63,6 +66,10 @@ export default function SettingsScreen() {
           </View>
         </Group>
 
+        <Group title="Sync">
+          <SyncSection />
+        </Group>
+
         <Group title="You">
           <Txt variant="small" muted>
             Your name
@@ -91,7 +98,9 @@ export default function SettingsScreen() {
 
         <Group title="Data">
           <Txt variant="small" muted>
-            Your data is saved on this phone. Sync with the desktop app is coming later.
+            {paired
+              ? 'Your data is saved on this phone. Sync sends an encrypted copy that only your devices can open.'
+              : 'Your data is saved on this phone.'}
           </Txt>
           <View style={{ flexDirection: 'row', gap: 10, marginTop: 4 }}>
             <Button

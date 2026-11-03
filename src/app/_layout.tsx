@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar'
 import * as SystemUI from 'expo-system-ui'
 import { useEffect } from 'react'
 import { useStore } from '@/lib/store'
+import { startSync } from '@/lib/sync'
 import { KeyboardProvider } from 'react-native-keyboard-controller'
 import { ThemeProvider, useTheme } from '@/theme'
 
@@ -18,7 +19,9 @@ function Root() {
   }, [t.bg])
 
   useEffect(() => {
-    if (hydrated) SplashScreen.hideAsync().catch(() => {})
+    if (!hydrated) return
+    SplashScreen.hideAsync().catch(() => {})
+    void startSync()
   }, [hydrated])
 
   const base = t.scheme === 'dark' ? DarkTheme : DefaultTheme

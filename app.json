@@ -36,6 +36,15 @@
             "image": "./assets/images/splash-icon.png"
           }
         }
+      ],
+      "expo-secure-store",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "kryfsec uses the camera only to scan the sync key QR code from the desktop app.",
+          "microphonePermission": false,
+          "recordAudioAndroid": false
+        }
       ]
     ],
     "experiments": {

@@ -20,7 +20,7 @@ export default function Roadmap() {
   const pct = topics.length ? Math.round(((done + learning * 0.5) / topics.length) * 100) : 0
 
   return (
-    <Screen tab>
+    <Screen tab refresh>
       <PageTitle title="Roadmap" subtitle="Your path, one topic at a time" />
       <Card style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
         <View style={{ width: 72, height: 72, alignItems: 'center', justifyContent: 'center' }}>
