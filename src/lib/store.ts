@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
-import { createSampleData, DEFAULT_SETTINGS } from './seed'
+import { createRoadmap, createSampleData, DEFAULT_SETTINGS } from './seed'
 import type { AppData, Settings } from './types'
 
 type Collections = 'areas' | 'topics' | 'logs' | 'resources' | 'labs' | 'certs' | 'goals'
@@ -12,6 +12,7 @@ interface Actions {
   remove: <K extends Collections>(key: K, id: string) => void
   setSettings: (patch: Partial<Settings>) => void
   resetSample: () => void
+  addStarterRoadmap: () => void
   resetEmpty: () => void
 }
 
@@ -49,7 +50,9 @@ const EMPTY: AppData = {
 export const useStore = create<Store>()(
   persist(
     (set) => ({
-      ...createSampleData(),
+      // A first start begins with a clean slate: no roadmap, no entries.
+      ...EMPTY,
+      settings: { ...DEFAULT_SETTINGS },
       hydrated: false,
       upsert: (key, item) =>
         set((s) => {
@@ -61,6 +64,15 @@ export const useStore = create<Store>()(
       remove: (key, id) => set((s) => ({ [key]: (s[key] as { id: string }[]).filter((x) => x.id !== id) }) as Partial<Store>),
       setSettings: (patch) => set((s) => ({ settings: { ...s.settings, ...patch } })),
       resetSample: () => set((s) => ({ ...createSampleData(), settings: s.settings })),
+      // Picked on purpose, so not marked `sample` (sync would drop it on join).
+      addStarterRoadmap: () =>
+        set((s) => {
+          const r = createRoadmap(false)
+          return {
+            areas: [...s.areas, ...r.areas.map((a) => ({ ...a, sample: false }))],
+            topics: [...s.topics, ...r.topics.map((x) => ({ ...x, sample: false }))]
+          }
+        }),
       resetEmpty: () => set((s) => ({ ...EMPTY, settings: s.settings }))
     }),
     {

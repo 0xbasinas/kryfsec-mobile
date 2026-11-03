@@ -121,7 +121,7 @@ export default function SettingsScreen() {
               variant="danger"
               style={{ flex: 1 }}
               onPress={() =>
-                Alert.alert('Start fresh?', 'This deletes all entries, labs and goals on this phone.', [
+                Alert.alert('Start fresh?', 'This deletes your roadmap, entries, labs and goals on this phone.', [
                   { text: 'Cancel', style: 'cancel' },
                   { text: 'Delete all', style: 'destructive', onPress: resetEmpty }
                 ])

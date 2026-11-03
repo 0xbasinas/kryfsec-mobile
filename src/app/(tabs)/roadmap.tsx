@@ -2,8 +2,8 @@ import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
 import { Pressable, View } from 'react-native'
 import { Ring } from '@/components/charts'
-import { Card, IconTile, PageTitle, Progress, Screen, Txt } from '@/components/ui'
-import { IconChevronRight } from '@/lib/icons'
+import { Button, Card, Empty, IconTile, PageTitle, Progress, Screen, Txt } from '@/components/ui'
+import { IconChevronRight, IconPlus } from '@/lib/icons'
 import { AREA_ICONS } from '@/lib/meta'
 import { areaProgress } from '@/lib/stats'
 import { useStore } from '@/lib/store'
@@ -14,6 +14,7 @@ export default function Roadmap() {
   const router = useRouter()
   const areas = useStore((s) => s.areas)
   const topics = useStore((s) => s.topics)
+  const addStarterRoadmap = useStore((s) => s.addStarterRoadmap)
   const progress = useMemo(() => areaProgress(areas, topics), [areas, topics])
   const done = topics.filter((x) => x.status === 'done').length
   const learning = topics.filter((x) => x.status === 'learning').length
@@ -38,6 +39,12 @@ export default function Roadmap() {
           </View>
         </View>
       </Card>
+      {areas.length === 0 && (
+        <View style={{ gap: 4 }}>
+          <Empty text="No skill areas yet. Add them in the desktop app and sync, or start from a ready-made roadmap." />
+          <Button label="Use starter roadmap" icon={IconPlus} variant="ghost" onPress={addStarterRoadmap} />
+        </View>
+      )}
       {progress.map(({ area, total, done: d, pct: p }) => {
         const c = t.color(area.color)
         return (
