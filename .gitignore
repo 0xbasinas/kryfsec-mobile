@@ -45,3 +45,10 @@ example
 # Native folders (made by `npx expo prebuild`)
 /android
 /ios
+
+# build outputs and secrets
+*.apk
+*.aab
+*.keystore
+.env
+.env*

@@ -1,8 +1,10 @@
 # CyberJourney mobile
 
-Phone companion for the CyberJourney desktop app. Built with Expo (SDK 58), Expo Router and TypeScript.
+Phone companion for the [CyberJourney desktop app](https://github.com/0xbasinas/cyberjourney-desktop). Built with Expo (SDK 58), Expo Router and TypeScript.
 
 Your data is saved on the phone (AsyncStorage). Sync with the desktop app is not built yet.
+
+Run the commands below from the repo root.
 
 ## Run it
 
@@ -15,7 +17,6 @@ development build (your own copy of the app with the native parts inside) or a n
 Needs the Android SDK and JDK 17 on the computer.
 
 ```bash
-cd mobile
 npm install
 npx expo run:android            # builds the dev app and installs it on the phone over USB
 npm start                       # later: start Metro and open the dev app
@@ -64,3 +65,7 @@ The `android/` and `ios/` folders are made by `npx expo prebuild` and are not co
 - Inline code stays as `` `text` `` with its backticks while you edit, and shows as code when you read.
 - Tables are kept as plain markdown text while editing.
 - Notes are saved as markdown, so they open the same way in the desktop app.
+
+## Licenses
+
+MIT – see [LICENSE](LICENSE). Third-party packages: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
