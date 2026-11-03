@@ -1,6 +1,9 @@
-# kryfsec mobile (CyberJourney)
+# kryfsec mobile
 
-Phone companion for the [kryfsec desktop app](https://github.com/0xbasinas/kryfsec-desktop). Built with Expo (SDK 58), Expo Router and TypeScript.
+kryfsec phone app, the companion to the [kryfsec desktop app](https://github.com/0xbasinas/kryfsec-desktop). Built with Expo (SDK 58), Expo Router and TypeScript.
+Website: [kryfsec.com](https://kryfsec.com)
+
+The app itself still uses the old name *CyberJourney* for now.
 
 Your data is saved on the phone (AsyncStorage). Sync with the desktop app is not built yet.
 

@@ -1,5 +1,5 @@
 /**
- * CyberJourney design tokens for React Native.
+ * kryfsec design tokens for React Native.
  * Same values as the desktop app (src/index.css): calm warm neutral grays
  * (in the spirit of Linear / Vercel Geist) with one muted accent.
  */

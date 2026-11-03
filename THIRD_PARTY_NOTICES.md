@@ -1,8 +1,8 @@
 # Third-party notices
 
-CyberJourney mobile is MIT licensed (see LICENSE). It is built with the open-source software below.
+kryfsec mobile is MIT licensed (see LICENSE). It is built with the open-source software below.
 
-The Expo companion app reuses CyberJourney's own code (data model, sample data,
+The Expo companion app reuses kryfsec's own code (data model, sample data,
 stats and palette from the desktop app). The charts, heatmap, tab bar and the
 note editor blocks (code, checklist, quote) were written for this project.
 Notes are shown and edited with react-native-enriched-markdown (below).
