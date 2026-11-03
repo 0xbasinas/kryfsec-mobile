@@ -1,11 +1,12 @@
-import { useLocalSearchParams } from 'expo-router'
+import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useRef, useState } from 'react'
 import { Linking, Pressable, View } from 'react-native'
+import { confirmDelete } from '@/components/form'
 import { NoteEditorView, NoteToolbar, useNoteEditor } from '@/components/note-editor'
 import { NoteView } from '@/components/note-view'
-import { Badge, Button, Card, Dot, Empty, Screen, Segmented, StackBar, Txt } from '@/components/ui'
+import { Badge, Button, Card, Dot, Empty, IconButton, Screen, Segmented, StackBar, Txt } from '@/components/ui'
 import { diffColor } from '@/lib/colors'
-import { IconExternalLink } from '@/lib/icons'
+import { IconExternalLink, IconPencil, IconTrash } from '@/lib/icons'
 import { DIFF_LABEL } from '@/lib/meta'
 import { platformColor } from '@/lib/platforms'
 import { useStore } from '@/lib/store'
@@ -19,6 +20,8 @@ export default function LabDetail() {
   const { id } = useLocalSearchParams<{ id: string }>()
   const lab = useStore((s) => s.labs.find((l) => l.id === id))
   const upsert = useStore((s) => s.upsert)
+  const remove = useStore((s) => s.remove)
+  const router = useRouter()
   const kb = useKeyboardHeight()
   const [editing, setEditing] = useState(false)
   if (!lab)
@@ -33,7 +36,24 @@ export default function LabDetail() {
 
   return (
     <View style={{ flex: 1, backgroundColor: t.bg }}>
-      <StackBar title="Lab" />
+      <StackBar
+        title="Lab"
+        right={
+          <View style={{ flexDirection: 'row', gap: 8 }}>
+            <IconButton icon={IconPencil} label="Edit lab" onPress={() => router.push({ pathname: '/edit/lab', params: { id: lab.id } })} />
+            <IconButton
+              icon={IconTrash}
+              label="Delete lab"
+              onPress={() =>
+                confirmDelete('Delete lab?', `"${lab.name}" and its writeup will be deleted.`, () => {
+                  remove('labs', lab.id)
+                  router.back()
+                })
+              }
+            />
+          </View>
+        }
+      />
       <Screen>
         <View style={{ gap: 10, paddingHorizontal: 2, marginTop: 4 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>

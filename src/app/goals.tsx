@@ -1,12 +1,14 @@
+import { useRouter } from 'expo-router'
 import { Pressable, View } from 'react-native'
-import { Badge, Card, Screen, StackBar, Txt } from '@/components/ui'
-import { IconCheck } from '@/lib/icons'
+import { Badge, Card, Empty, IconButton, Screen, StackBar, Txt } from '@/components/ui'
+import { IconCheck, IconPlus } from '@/lib/icons'
 import { useStore } from '@/lib/store'
 import { dueLabel, today } from '@/lib/utils'
 import { useTheme } from '@/theme'
 
 export default function Goals() {
   const t = useTheme()
+  const router = useRouter()
   const goals = useStore((s) => s.goals)
   const areas = useStore((s) => s.areas)
   const upsert = useStore((s) => s.upsert)
@@ -22,7 +24,7 @@ export default function Goals() {
         return (
           <Pressable
             key={g.id}
-            onPress={() => upsert('goals', { ...g, done: !g.done, doneAt: g.done ? undefined : today() })}
+            onPress={() => router.push({ pathname: '/edit/goal', params: { id: g.id } })}
             style={({ pressed }) => ({
               flexDirection: 'row',
               alignItems: 'center',
@@ -32,7 +34,10 @@ export default function Goals() {
               borderBottomWidth: i === items.length - 1 ? 0 : 1,
               borderBottomColor: t.border
             })}>
-            <View
+            <Pressable
+              onPress={() => upsert('goals', { ...g, done: !g.done, doneAt: g.done ? undefined : today() })}
+              hitSlop={10}
+              accessibilityLabel={g.done ? 'Mark as open' : 'Mark as done'}
               style={{
                 width: 22,
                 height: 22,
@@ -44,7 +49,7 @@ export default function Goals() {
                 borderColor: t.borderStrong
               }}>
               {g.done ? <IconCheck size={14} color={t.accentFg} strokeWidth={2.8} /> : null}
-            </View>
+            </Pressable>
             <View style={{ flex: 1, gap: 2 }}>
               <Txt variant="body" color={g.done ? t.muted : t.fg} style={g.done ? { textDecorationLine: 'line-through' } : undefined}>
                 {g.title}
@@ -64,12 +69,18 @@ export default function Goals() {
 
   return (
     <View style={{ flex: 1, backgroundColor: t.bg }}>
-      <StackBar title="Goals" />
+      <StackBar title="Goals" right={<IconButton icon={IconPlus} label="New goal" filled onPress={() => router.push('/edit/goal')} />} />
       <Screen refresh>
-        <Txt variant="small" muted style={{ paddingHorizontal: 4 }}>
-          Open · {open.length}
-        </Txt>
-        {list(open)}
+        {goals.length === 0 ? (
+          <Empty text="No goals yet. Tap + to set one." />
+        ) : (
+          <>
+            <Txt variant="small" muted style={{ paddingHorizontal: 4 }}>
+              Open · {open.length} — tap the box to tick it off, tap the goal to edit it
+            </Txt>
+            {open.length > 0 && list(open)}
+          </>
+        )}
         {done.length > 0 && (
           <>
             <Txt variant="small" muted style={{ paddingHorizontal: 4, marginTop: 6 }}>

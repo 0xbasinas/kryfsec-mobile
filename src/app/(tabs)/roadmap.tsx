@@ -2,8 +2,8 @@ import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
 import { Pressable, View } from 'react-native'
 import { Ring } from '@/components/charts'
-import { Button, Card, Empty, IconTile, PageTitle, Progress, Screen, Txt } from '@/components/ui'
-import { IconChevronRight, IconPlus } from '@/lib/icons'
+import { Button, Card, Empty, IconButton, IconTile, PageTitle, Progress, Screen, Txt } from '@/components/ui'
+import { IconChevronRight, IconPlus, IconSparkles } from '@/lib/icons'
 import { AREA_ICONS } from '@/lib/meta'
 import { areaProgress } from '@/lib/stats'
 import { useStore } from '@/lib/store'
@@ -22,7 +22,11 @@ export default function Roadmap() {
 
   return (
     <Screen tab refresh>
-      <PageTitle title="Roadmap" subtitle="Your path, one topic at a time" />
+      <PageTitle
+        title="Roadmap"
+        subtitle="Your path, one topic at a time"
+        right={<IconButton icon={IconPlus} label="New area" filled onPress={() => router.push('/edit/area')} />}
+      />
       <Card style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
         <View style={{ width: 72, height: 72, alignItems: 'center', justifyContent: 'center' }}>
           <Ring value={pct / 100} size={72} stroke={7} />
@@ -40,9 +44,10 @@ export default function Roadmap() {
         </View>
       </Card>
       {areas.length === 0 && (
-        <View style={{ gap: 4 }}>
-          <Empty text="No skill areas yet. Add them in the desktop app and sync, or start from a ready-made roadmap." />
-          <Button label="Use starter roadmap" icon={IconPlus} variant="ghost" onPress={addStarterRoadmap} />
+        <View style={{ gap: 10 }}>
+          <Empty text="No skill areas yet. Add your own, or start from a ready-made roadmap and change it as you go." />
+          <Button label="New area" icon={IconPlus} onPress={() => router.push('/edit/area')} />
+          <Button label="Use starter roadmap" icon={IconSparkles} variant="ghost" onPress={addStarterRoadmap} />
         </View>
       )}
       {progress.map(({ area, total, done: d, pct: p }) => {

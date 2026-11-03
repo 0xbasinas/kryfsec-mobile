@@ -36,6 +36,9 @@ function Root() {
       <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: t.bg }, animation: 'fade_from_bottom' }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="journal/new" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        {['area', 'topic', 'lab', 'resource', 'cert', 'goal'].map((k) => (
+          <Stack.Screen key={k} name={`edit/${k}`} options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        ))}
       </Stack>
     </NavThemeProvider>
   )

@@ -61,7 +61,13 @@ export const useStore = create<Store>()(
           const next = i >= 0 ? list.map((x, j) => (j === i ? item : x)) : [item, ...list]
           return { [key]: next } as Partial<Store>
         }),
-      remove: (key, id) => set((s) => ({ [key]: (s[key] as { id: string }[]).filter((x) => x.id !== id) }) as Partial<Store>),
+      remove: (key, id) =>
+        set((s) => {
+          const patch: Partial<AppData> = { [key]: (s[key] as { id: string }[]).filter((x) => x.id !== id) }
+          // An area takes its topics with it (same as the desktop app).
+          if (key === 'areas') patch.topics = s.topics.filter((x) => x.areaId !== id)
+          return patch as Partial<Store>
+        }),
       setSettings: (patch) => set((s) => ({ settings: { ...s.settings, ...patch } })),
       resetSample: () => set((s) => ({ ...createSampleData(), settings: s.settings })),
       // Picked on purpose, so not marked `sample` (sync would drop it on join).

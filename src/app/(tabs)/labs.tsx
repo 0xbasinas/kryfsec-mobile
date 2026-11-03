@@ -1,8 +1,8 @@
 import { useRouter } from 'expo-router'
 import { useMemo, useState } from 'react'
 import { Pressable, View } from 'react-native'
-import { Badge, Card, Chips, Dot, Empty, PageTitle, Screen, Txt } from '@/components/ui'
-import { IconClock } from '@/lib/icons'
+import { Badge, Card, Chips, Dot, Empty, IconButton, PageTitle, Screen, Txt } from '@/components/ui'
+import { IconClock, IconPlus } from '@/lib/icons'
 import { DIFF_LABEL, WORK_LABEL } from '@/lib/meta'
 import { platformColor } from '@/lib/platforms'
 import { useStore } from '@/lib/store'
@@ -29,7 +29,11 @@ export default function Labs() {
 
   return (
     <Screen tab refresh>
-      <PageTitle title="Labs & CTFs" subtitle={`${solved} solved · ${count('doing')} in progress`} />
+      <PageTitle
+        title="Labs & CTFs"
+        subtitle={`${solved} solved · ${count('doing')} in progress`}
+        right={<IconButton icon={IconPlus} label="New lab" filled onPress={() => router.push('/edit/lab')} />}
+      />
       <Chips
         value={filter}
         onChange={setFilter}
@@ -41,7 +45,7 @@ export default function Labs() {
         ]}
       />
       {list.length === 0 ? (
-        <Empty text="No labs here yet." />
+        <Empty text="No labs here yet. Tap + to add one." />
       ) : (
         list.map((l) => (
           <Pressable key={l.id} onPress={() => router.push(`/labs/${l.id}`)} style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}>

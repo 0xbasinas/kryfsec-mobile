@@ -5,6 +5,8 @@ Website: [kryfsec.com](https://kryfsec.com)
 
 Your data is saved on the phone (AsyncStorage). It can sync with the desktop app, end-to-end encrypted (see [Sync](#sync)).
 
+You can add, edit and delete everything on the phone, just like on the desktop: journal entries, roadmap areas and topics, labs, resources, certifications and goals. Changes sync both ways.
+
 Run the commands below from the repo root.
 
 ## Run it
@@ -92,7 +94,7 @@ The sync shots are from the web preview. On the web preview the confirm dialogs 
 ## Layout
 
 - `src/app` – screens (Expo Router). Tabs: Home, Journal, Roadmap, Labs, More.
-- `src/components` – UI pieces, charts, tab bar, note editor (`note-editor.tsx`) and note viewer (`note-view.tsx`).
+- `src/components` – UI pieces, forms (`form.tsx`), charts, tab bar, note editor (`note-editor.tsx`) and note viewer (`note-view.tsx`).
 - `src/lib` – types, sample data and stats (shared with the desktop app), store, note blocks (`note-blocks.ts`), sync (`sync.ts`).
 - `src/sync-core` – shared sync code copied from kryfsec-sync.
 - `src/theme` – colors for dark and light, same as the desktop app.

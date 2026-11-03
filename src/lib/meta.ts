@@ -14,6 +14,18 @@ export const AREA_ICONS: Record<AreaIcon, I.Icon> = {
   shield: I.IconShield
 }
 
+export const AREA_COLORS = [
+  'var(--c-periwinkle)',
+  'var(--c-sage)',
+  'var(--c-sand)',
+  'var(--c-rose)',
+  'var(--c-slate)',
+  'var(--c-mauve)',
+  'var(--c-clay)',
+  'var(--c-teal)',
+  'var(--c-olive)'
+]
+
 export const KIND_META: Record<ResourceKind, { label: string; icon: I.Icon; color: string }> = {
   course: { label: 'Course', icon: I.IconSchool, color: 'var(--c-jade)' },
   book: { label: 'Book', icon: I.IconBook, color: 'var(--c-amber)' },
