@@ -33,7 +33,7 @@ Main packages used by the mobile app:
 | [react-native-keyboard-controller](https://github.com/kirillzyusko/react-native-keyboard-controller) | 1.22.7 | MIT (Copyright (c) 2021 Kiryl Ziusko) |
 | [expo-dev-client](https://github.com/expo/expo/tree/main/packages/expo-dev-client) (dev builds only) | 58.0.x | MIT |
 | [react-native-web](https://github.com/necolas/react-native-web) (web preview only) | 0.21.x | MIT |
-| [expo-camera](https://github.com/expo/expo/tree/main/packages/expo-camera), [expo-secure-store](https://github.com/expo/expo/tree/main/packages/expo-secure-store), [expo-crypto](https://github.com/expo/expo/tree/main/packages/expo-crypto) (sync) | 58.0.x | MIT |
+| [expo-camera](https://github.com/expo/expo/tree/main/packages/expo-camera), [expo-secure-store](https://github.com/expo/expo/tree/main/packages/expo-secure-store), [expo-crypto](https://github.com/expo/expo/tree/main/packages/expo-crypto), [expo-file-system](https://github.com/expo/expo/tree/main/packages/expo-file-system) (sync) | 58.0.x | MIT |
 | [@noble/ciphers](https://github.com/paulmillr/noble-ciphers) (sync) | 2.4.0 | MIT (Copyright (c) 2022 Paul Miller) |
 | [@noble/hashes](https://github.com/paulmillr/noble-hashes) (sync) | 2.4.0 | MIT (Copyright (c) 2022 Paul Miller) |
 | [fflate](https://github.com/101arrowz/fflate) (sync) | 0.8.3 | MIT (Copyright (c) Arjun Barrett) |

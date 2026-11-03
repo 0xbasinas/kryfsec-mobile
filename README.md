@@ -61,11 +61,26 @@ The phone can also start a sync (*New sync here*) and share the key to type into
 - The camera is only used to scan the QR code. The picture is not saved or sent.
 
 How changes from two devices are merged: [docs/merging.md](https://github.com/0xbasinas/kryfsec-sync/blob/main/docs/merging.md).
+Data is sent in small encrypted pieces and a sync only sends the pieces that changed: [docs/chunking.md](https://github.com/0xbasinas/kryfsec-sync/blob/main/docs/chunking.md).
 Server and shared sync code: [kryfsec-sync](https://github.com/0xbasinas/kryfsec-sync). The shared code is copied into `src/sync-core/` (do not edit it there).
 
 <img src="screenshots/11-sync-dark.png" width="260" alt="Sync settings, dark"> <img src="screenshots/12-sync-light.png" width="260" alt="Sync settings, light">
 
 The sync shots are from the web preview. On the web preview the confirm dialogs do not show, so joining and turning off only work in the phone app.
+
+### Known limits
+
+- Synced data can be up to 64 MB (after compression and encryption). A journal
+  with thousands of notes is usually under 1 MB.
+- This version upgrades your synced data to the new chunked format on its first sync.
+  Older versions of the app (phone or desktop) then show "Please update this app" and
+  stop syncing until they are updated. Their local data stays.
+- The app's own data is still kept in AsyncStorage. On Android that has a size limit
+  per item (about 2 MB by default), so a very large journal may not save on the phone.
+  The sync copy is kept in a separate file, so it is not affected.
+- The server is on Cloudflare's free plan: 120 syncs a minute per vault, and the
+  whole server has a daily request budget, so very busy use may be slowed.
+- The order of items in a list is not synced. New items go to the top.
 
 ## Scripts
 

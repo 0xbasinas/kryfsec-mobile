@@ -1,4 +1,4 @@
-// Copied from https://github.com/0xbasinas/kryfsec-sync (packages/core, 0fa20f4). MIT.
+// Copied from https://github.com/0xbasinas/kryfsec-sync (packages/core, 3c3658c). MIT.
 // Do not edit here: change it in kryfsec-sync and run scripts/vendor.sh.
 import { deriveKeys, formatSyncKey, generateSyncKey, newDeviceId, parseSyncKey, type VaultKeys } from './crypto'
 import type { Schema, Snapshot } from './doc'
@@ -212,7 +212,8 @@ export class SyncController {
 function explain(err: unknown): string {
   if (err instanceof SyncHttpError) {
     if (err.status === 401) return 'The server did not accept this key.'
-    if (err.status === 413) return 'Your data is too big to sync (over 4 MB).'
+    if (err.status === 413) return 'Your data is too big to sync (over 64 MB).'
+    if (err.status === 410) return 'This vault was upgraded by a newer kryfsec. Please update this app.'
     if (err.status === 429) return 'Too many syncs. It will try again soon.'
     if (err.status >= 500) return 'The sync server had a problem. It will try again soon.'
     return err.message

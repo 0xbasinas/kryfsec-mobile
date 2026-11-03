@@ -1,6 +1,7 @@
 import './polyfills'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { fetch as expoFetch } from 'expo/fetch'
+import { File, Paths } from 'expo-file-system'
 import * as SecureStore from 'expo-secure-store'
 import { AppState, Platform } from 'react-native'
 import { create } from 'zustand'
@@ -25,10 +26,41 @@ const keyStore = {
         : SecureStore.setItemAsync(KEY_NAME, v)
 }
 
-/** fetch with a 20 second time limit. */
+// The sync state holds a copy of the last synced data, so on the phone it goes in a file
+// (AsyncStorage on Android has a small size limit per item). The web build keeps local storage.
+// Older versions kept it in AsyncStorage; it is moved over on first load.
+const stateFile = (): File => new File(Paths.document, 'kryfsec-sync-state.json')
+const stateStore = {
+  load: async (): Promise<SyncState | null> => {
+    let raw: string | null = null
+    if (Platform.OS !== 'web') {
+      const f = stateFile()
+      if (f.exists) raw = await f.text()
+    }
+    if (raw === null) raw = await AsyncStorage.getItem(STATE_NAME)
+    if (!raw) return null
+    try {
+      return JSON.parse(raw) as SyncState
+    } catch {
+      return null // a broken copy: the next sync rebuilds it from the server
+    }
+  },
+  save: async (s: SyncState | null): Promise<void> => {
+    if (Platform.OS === 'web') {
+      await (s ? AsyncStorage.setItem(STATE_NAME, JSON.stringify(s)) : AsyncStorage.removeItem(STATE_NAME))
+      return
+    }
+    const f = stateFile()
+    if (s) await f.write(JSON.stringify(s))
+    else if (f.exists) f.delete()
+    await AsyncStorage.removeItem(STATE_NAME)
+  }
+}
+
+/** fetch with a 60 second time limit (uploads go in batches of up to 4 MB). */
 const timedFetch = ((url: string, init?: RequestInit) => {
   const ctrl = new AbortController()
-  const timer = setTimeout(() => ctrl.abort(), 20_000)
+  const timer = setTimeout(() => ctrl.abort(), 60_000)
   return expoFetch(url, { ...(init as object), signal: ctrl.signal } as never).finally(() => clearTimeout(timer))
 }) as unknown as typeof fetch
 
@@ -51,11 +83,8 @@ export const sync = new SyncController({
   storage: {
     loadKey: keyStore.get,
     saveKey: keyStore.set,
-    loadState: async () => {
-      const raw = await AsyncStorage.getItem(STATE_NAME)
-      return raw ? (JSON.parse(raw) as SyncState) : null
-    },
-    saveState: async (s) => (s ? AsyncStorage.setItem(STATE_NAME, JSON.stringify(s)) : AsyncStorage.removeItem(STATE_NAME))
+    loadState: stateStore.load,
+    saveState: stateStore.save
   },
   schema: KRYFSEC_SCHEMA,
   read: () => appToSnapshot(current() as unknown as KryfsecData),
