@@ -19,6 +19,19 @@ interface Meta {
   hydrated: boolean
 }
 
+const STORAGE_KEY = 'kryfsec-data'
+// Data saved by the app under its old name. Read once if the new key is empty.
+const OLD_STORAGE_KEY = 'cyber' + 'journey-data'
+const storageWithOldKey = {
+  getItem: async (name: string): Promise<string | null> => {
+    const value = await AsyncStorage.getItem(name)
+    if (value !== null || name !== STORAGE_KEY) return value
+    return AsyncStorage.getItem(OLD_STORAGE_KEY)
+  },
+  setItem: (name: string, value: string): Promise<void> => AsyncStorage.setItem(name, value),
+  removeItem: (name: string): Promise<void> => AsyncStorage.removeItem(name)
+}
+
 export type Store = AppData & Actions & Meta
 
 const EMPTY: AppData = {
@@ -51,9 +64,9 @@ export const useStore = create<Store>()(
       resetEmpty: () => set((s) => ({ ...EMPTY, settings: s.settings }))
     }),
     {
-      name: 'cyberjourney-data',
+      name: STORAGE_KEY,
       version: 1,
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createJSONStorage(() => storageWithOldKey),
       partialize: (s): AppData => ({
         version: 1,
         settings: s.settings,

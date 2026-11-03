@@ -1,18 +1,18 @@
 {
   "expo": {
-    "name": "CyberJourney",
-    "slug": "cyberjourney",
+    "name": "kryfsec",
+    "slug": "kryfsec",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "cyberjourney",
+    "scheme": "kryfsec",
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "dev.basinas.cyberjourney"
+      "bundleIdentifier": "com.kryfsec.mobile"
     },
     "android": {
-      "package": "dev.basinas.cyberjourney",
+      "package": "com.kryfsec.mobile",
       "adaptiveIcon": {
         "backgroundColor": "#161615",
         "foregroundImage": "./assets/images/icon.png"
